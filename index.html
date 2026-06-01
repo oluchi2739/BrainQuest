@@ -7,50 +7,7 @@
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
     <link rel="manifest" href="manifest.webmanifest">
-
-    <style>
-      /* Unityの表示サイズは基本的にTemplateData/style.cssとUnity設定を優先します */
-      #portrait-warning {
-        display: none;
-        position: fixed;
-        inset: 0;
-        z-index: 99999;
-        background: #111;
-        color: #fff;
-        font-family: sans-serif;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 24px;
-        box-sizing: border-box;
-      }
-
-      #portrait-warning .message {
-        font-size: 24px;
-        line-height: 1.6;
-        font-weight: bold;
-      }
-
-      #portrait-warning .sub {
-        margin-top: 16px;
-        font-size: 16px;
-        font-weight: normal;
-        opacity: 0.85;
-      }
-
-      /* 横画面のスマホ・タブレットだけ警告を出す */
-      @media screen and (orientation: landscape) and (max-width: 1024px) {
-        #portrait-warning {
-          display: flex;
-        }
-
-        #unity-container {
-          visibility: hidden;
-        }
-      }
-    </style>
   </head>
-
   <body>
     <div id="unity-container">
       <canvas id="unity-canvas" width=900 height=1600 tabindex="-1"></canvas>
@@ -62,14 +19,6 @@
       </div>
       <div id="unity-warning"> </div>
     </div>
-
-    <div id="portrait-warning">
-      <div>
-        <div class="message">縦画面で遊んでください</div>
-        <div class="sub">端末を縦向きにするとゲーム画面に戻ります。</div>
-      </div>
-    </div>
-
     <script>
       window.addEventListener("load", function () {
         if ("serviceWorker" in navigator) {
@@ -83,6 +32,12 @@
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var warningBanner = document.querySelector("#unity-warning");
 
+      // Shows a temporary message banner/ribbon for a few seconds, or
+      // a permanent error message on top of the canvas if type=='error'.
+      // If type=='warning', a yellow highlight color is used.
+      // Modify or remove this function to customize the visually presented
+      // way that non-critical warnings and error messages are presented to the
+      // user.
       function unityShowBanner(msg, type) {
         function updateBannerVisibility() {
           warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
@@ -114,10 +69,15 @@
         showBanner: unityShowBanner,
       };
 
-      // UnityのCanvasサイズ同期は維持します。
+      // By default Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
       // config.matchWebGLToCanvasSize = false;
 
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
         var meta = document.createElement('meta');
         meta.name = 'viewport';
         meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
