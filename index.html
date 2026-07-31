@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Unity Web Player | BrainQuest</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
@@ -19,7 +20,6 @@
       <div id="unity-warning"> </div>
       <div id="unity-footer">
         <div id="unity-logo-title-footer"></div>
-        <div id="unity-fullscreen-button"></div>
         <div id="unity-build-title">BrainQuest</div>
       </div>
     </div>
@@ -52,12 +52,12 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/1.1.loader.js";
+      var loaderUrl = buildUrl + "/1.2.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/1.1.data",
-        frameworkUrl: buildUrl + "/1.1.framework.js",
-        codeUrl: buildUrl + "/1.1.wasm",
+        dataUrl: buildUrl + "/1.2.data",
+        frameworkUrl: buildUrl + "/1.2.framework.js",
+        codeUrl: buildUrl + "/1.2.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "BrainQuest",
@@ -103,9 +103,9 @@
 
 
       } else {
-        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
+        // Desktop style: Fill the browser viewport while keeping the fullscreen button available.
+        canvas.style.width = "100vw";
+        canvas.style.height = "100vh";
       }
 
       document.querySelector("#unity-loading-bar").style.display = "block";
@@ -117,10 +117,6 @@
           document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
               }).then((unityInstance) => {
                 document.querySelector("#unity-loading-bar").style.display = "none";
-                document.querySelector("#unity-fullscreen-button").onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
-
               }).catch((message) => {
                 alert(message);
               });
